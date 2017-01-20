@@ -1,0 +1,6 @@
+@echo off
+echo Compiling client...
+call scalac -d build/client src/client/*.scala src/shared/*.scala
+echo Compiling server...
+call scalac -d build/server src/server/*.scala src/shared/*.scala
+echo Compilation done.

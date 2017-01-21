@@ -5,7 +5,11 @@ class Channel(var name: String, var messages: List[Message] = Nil) {
 
     def addMessage(mdata: String) {
         if (mdata.length > 3) {
-            messages = new Message(mdata) :: messages
+            try {
+                messages = new Message(mdata) :: messages
+            } catch {
+                case default: Throwable => {  }
+            }
         }
         messages = messages.sortWith((x, y) => x.id > y.id)
     }

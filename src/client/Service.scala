@@ -25,21 +25,30 @@ class Service(val host: String, val port: Int = 666) {
     }
     
     def sendMessage(channel: String, nick: String, content: String) {
-        callServer("send\n" + channel + "\n" + nick + "\n" + content)
+        if (content.length > 0 && nick.length > 0) {
+            callServer("send\n" + channel + "\n" + nick + "\n" + content)
+        }
     }
 
-    def callServer(data: String) = {
-        val s = new Socket(InetAddress.getByName(host), port)
-        lazy val in = new BufferedSource(s.getInputStream).getLines()
-        val out = new PrintStream(s.getOutputStream)
-        out.println(data)
-        out.flush()
+    def callServer(data: String): List[String] = {
+        try {
+            val s = new Socket(InetAddress.getByName(host), port)
+            lazy val in = new BufferedSource(s.getInputStream).getLines()
+            val out = new PrintStream(s.getOutputStream)
+            out.println(data)
+            out.flush()
 
-        var response: List[String] = Nil
-        while (in.hasNext) {
-            response = in.next :: response
+            var response: List[String] = Nil
+            while (in.hasNext) {
+                response = in.next :: response
+            }
+            s.close()
+            return response
+        } catch {
+            case default: Throwable => {
+                println(default)
+            }
         }
-        s.close()
-        response
+        List("Error")
     }
 }
